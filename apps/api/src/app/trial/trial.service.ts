@@ -83,6 +83,7 @@ export class TrialService implements OnModuleInit {
       },
       include: {
         ctml_jsons: true,
+        trial_group: true,
       }
     });
     return trials;

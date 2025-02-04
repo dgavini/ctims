@@ -116,6 +116,10 @@ const EditorEditTrialPage = () => {
         }
         editTrialObject = {...editTrialObject, ...priordata}
       }
+      let trialGroup = {
+        trial_group: trial.trial_group.name
+      }
+      editTrialObject = {...editTrialObject, ...trialGroup}
       dispatch(setCtmlModel(editTrialObject))
     }
   }, [editTrialResponse])

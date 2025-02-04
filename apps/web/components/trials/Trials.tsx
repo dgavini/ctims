@@ -88,7 +88,12 @@ const Trials = (props: {selectedTrialGroup: { plainRole: string, isAdmin: boolea
   useEffect(() => {
     if (getTrialsByIDsResponse) {
       const ctmlJsonsData: any[] = getTrialsByIDsResponse.data;
+      console.log("ctmlJsonsData",ctmlJsonsData)
       const selectedJsons = ctmlJsonsData.map((ctmlJsonData) => ctmlJsonData.ctml_jsons[0].data);
+      const selectedJsons2 = ctmlJsonsData.map((ctmlJsonData) => `${ctmlJsonData.ctml_jsons[0].data}trial_group: ${ctmlJsonData.trial_group.name}`
+      );
+      console.log("selectedJsons",selectedJsons)
+      console.log("selectedJsons2",selectedJsons2)
       sendMultipleCTMLsOperation(selectedJsons)
     }
   }, [getTrialsByIDsResponse]);
