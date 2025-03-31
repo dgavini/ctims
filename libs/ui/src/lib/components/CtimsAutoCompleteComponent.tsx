@@ -3,12 +3,13 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { Tooltip } from 'antd';
 import styles from "./CtimsAutoCompleteComponent.module.css";
 import useGetGenes from '../../../../../apps/web/hooks/useGetGenes';
+import useGetAgents from '../../../../../apps/web/hooks/useGetAgents';
 import IOSSwitch from '../components/IOSSwitch';
 import { hugo_symblo_validation_func } from "../components/helpers";
 import cn from "clsx";
 
 const AutocompleteField = ({ onChange, ...props }) => {
-  const { filteredHugoSymbols, loading, searchSymbols } = useGetGenes();
+  const { filteredHugoSymbols, loading, searchSymbols } = props.schema.autoCompleteType === "AgentDrug" ? useGetAgents() : useGetGenes();
   const [selectedHugoSymbol, setSelectedHugoSymbol] = useState<string>(props.value ? props.value.replace('!', '') : '');
   const [excludeToggle, setExcludeToggle] = useState<boolean>(props.value ? props.value.startsWith('!') : false);
   const [hugoSymbolError, setHugoSymbolError] = React.useState(false);
