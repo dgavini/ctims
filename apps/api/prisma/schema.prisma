@@ -118,7 +118,7 @@ model gene {
 }
 
 model agent {
-  id         Int
+  id         Int  @unique
   agent String
 }
 
