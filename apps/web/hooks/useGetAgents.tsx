@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import useAxios from "./useAxios";
 
-const useGetAgents = () => {
+const useGetAgents = (autoCompleteType: String) => {
   const [filteredAgents, setFilteredAgents] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -11,12 +11,22 @@ const useGetAgents = () => {
   const searchAgents = async (query) => {
     try {
       setLoading(true);
-      const response = await operation(
-        {
-          method: 'get',
-          url: `agents/agentdrug?query=${query}`
-        }
-        );
+      if(autoCompleteType=="AgentDrug"){
+        var response = await operation(
+          {
+            method: 'get',
+            url: `agents/agentdrug?query=${query}`
+          }
+          );
+      }
+      else if(autoCompleteType=="AgentClass"){
+        var response = await operation(
+          {
+            method: 'get',
+            url: `agents/agentclass?query=${query}`
+          }
+          );
+      }
       const symbols = response.data;
       setFilteredAgents(symbols);
     } catch (error) {

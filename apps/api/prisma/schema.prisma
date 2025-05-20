@@ -118,8 +118,13 @@ model gene {
 }
 
 model agent {
-  id         Int
+  id         Int  @unique
   agent String
+}
+
+model agentclass {
+  id         Int  @unique
+  agentclass String
 }
 
 model trial_lock {

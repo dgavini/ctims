@@ -9,7 +9,7 @@ import { hugo_symblo_validation_func } from "../components/helpers";
 import cn from "clsx";
 
 const AutocompleteField = ({ onChange, ...props }) => {
-  const { filteredHugoSymbols, loading, searchSymbols } = props.schema.autoCompleteType === "AgentDrug" ? useGetAgents() : useGetGenes();
+  const { filteredHugoSymbols, loading, searchSymbols } = props.schema.autoCompleteType === "AgentField" || "AgentClass" ? useGetAgents(props.schema.autoCompleteType) : useGetGenes();
   const [selectedHugoSymbol, setSelectedHugoSymbol] = useState<string>(props.value ? props.value.replace('!', '') : '');
   const [excludeToggle, setExcludeToggle] = useState<boolean>(props.value ? props.value.startsWith('!') : false);
   const [hugoSymbolError, setHugoSymbolError] = React.useState(false);
@@ -109,7 +109,7 @@ const AutocompleteField = ({ onChange, ...props }) => {
         className={cn("w-full", hugoSymbolError ? "p-invalid" : "")}
         appendTo='self'
       />
-      <div style={{ display: 'flex', marginTop: '10px', alignItems: 'center' }}>
+      { /*props.schema.category != "AgentField" && */<div style={{ display: 'flex', marginTop: '10px', alignItems: 'center' }}>
         <div className={styles.label}>Exclude this criteria from matches.</div>
         <div style={{ marginLeft: 'auto' }}>
           <IOSSwitch
@@ -118,7 +118,7 @@ const AutocompleteField = ({ onChange, ...props }) => {
             onChange={handleToggleChange}
           />
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

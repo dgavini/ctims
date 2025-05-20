@@ -33,4 +33,33 @@ export class AgentService {
     }
   }
 
+
+  async fetchAgentsClass() {
+    try {
+      const hugoJSON = await this.prismaService.agentclass.findMany();
+      return hugoJSON.map((entry) => entry.agentclass);
+    } catch (error) {
+      console.error('Error fetching', error);
+      throw error;
+    }
+  }
+
+  async filterAgentClass(query: string) {
+
+    if (query === undefined || query === '') {
+      return [];
+    }
+
+    try {
+      const symbols = await this.fetchAgentsClass();
+      const filteredAgentClass = symbols.filter((symbol) =>
+        symbol.toLowerCase().startsWith(query?.toLowerCase())
+      );
+      return filteredAgentClass;
+    } catch (error) {
+      console.error('Error filtering', error);
+      throw error;
+    }
+  }
+
 }
