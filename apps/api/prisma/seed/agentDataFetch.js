@@ -1,6 +1,7 @@
 const fs = require('fs');
 const csvParser = require("csv-parser");
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client');
+const readline = require('readline');
 const prisma = new PrismaClient({
     datasources: {
         db: {
@@ -11,6 +12,7 @@ const prisma = new PrismaClient({
   )
 async function saveAgentClass(data){
     try{
+        await prisma.agent.deleteMany();
         await prisma.agent.createMany({
             data: data,
             skipDuplicates: true,
@@ -24,11 +26,29 @@ async function saveAgentClass(data){
         await prisma.$disconnect();
       }
 }
+
+async function askForConfirmation() {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+  
+    return new Promise((resolve) => {
+      rl.question(
+        "This operation will delete all current data from the 'agent' table. Do you want to continue? (y/n): ",
+        (answer) => {
+          rl.close();
+          resolve(answer.toLowerCase() === 'y');
+        }
+      );
+    });
+  }
+
 async function main(){
     return  new Promise((resolve, reject)=>{
         try{
             const result = [];
-            fs.createReadStream("./agentData/NCIDrugNames.csv")
+            fs.createReadStream("apps/api/prisma/seed/agentData/NCIDrugNames.csv")
                 .pipe(csvParser())
                 .on("data", (data) => {
                     result.push(data);
@@ -51,10 +71,19 @@ async function main(){
         }
     });
 }
-main().then((result)=>{
-    saveAgentClass(result)
-}).catch(error=>{
-    console.log("Error",error)
-}).finally(async () => {
-    await prisma.$disconnect()
-  })
+
+(async () => {
+    try {
+      const confirmed = await askForConfirmation();
+      if (!confirmed) {
+        console.log("Operation canceled by the user.");
+        await prisma.$disconnect();
+        process.exit(0);
+      }
+  
+      const result = await main();
+      await saveAgentClass(result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  })();
